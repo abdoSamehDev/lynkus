@@ -15,9 +15,7 @@ function Post({
                   profileImg,
                   body,
                   postImg,
-                  likes,
                   commemts,
-                  postLiked,
                   index,
               }) {
     const dispatch = useDispatch();
