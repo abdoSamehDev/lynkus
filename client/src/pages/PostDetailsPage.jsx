@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import Post from "../components/Post";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -17,7 +17,6 @@ function PostDetailsPage() {
     const [newComment, setNewComment] = useState("");
     const [optionsOpen, setOptionsOpen] = useState(null); // Track which comment's options are open
     const posts = useSelector((state) => state.post.posts);
-
     const postDetails = posts[postId];
 
     // Function to handle new comment submission
@@ -94,19 +93,29 @@ function PostDetailsPage() {
                             alt={`${comment.user}'s avatar`}
                             className="w-10 h-10 rounded-full mr-4"
                         />
-                        <div className="flex-grow">
+                        <div className="flex-grow w-[80%]">
                             <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{comment.user}</p>
-                            <p className="text-base text-gray-700 dark:text-gray-300">{comment.text}</p>
-                        </div>
-
-                        {/* Options Menu */}
-                        <div className="relative" ref={optionsMenuRef}>
-                            <button
-                                onClick={() => toggleOptionsMenu(comment.id)}
-                                className="ml-4 text-gray-600"
-                                aria-label="Options"
+                            <p
+                                className="text-base text-gray-700 dark:text-gray-300 break-words"
+                                style={{
+                                    overflow: 'hidden',
+                                    display: 'block',
+                                    maxHeight: '6em', // Adjust this value based on the line height to control how many lines to show
+                                    lineHeight: '1.5em', // Set your desired line height here
+                                }}
                             >
-                                <EllipsisVerticalIcon className="w-5 h-5" />
+                                {comment.text}
+                            </p>
+                    </div>
+
+                {/* Options Menu */}
+                    <div className="relative" ref={optionsMenuRef}>
+                <button
+                    onClick={() => toggleOptionsMenu(comment.id)}
+                    className="ml-4 text-gray-600"
+                    aria-label="Options"
+                            >
+                                <EllipsisVerticalIcon className="w-5 h-5"/>
                             </button>
                             {optionsOpen === comment.id && (
                                 <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
@@ -137,7 +146,7 @@ function PostDetailsPage() {
                         required
                     ></textarea>
                     <div className="flex justify-end">
-                        <DefaultButton type="submit" label="Post Comment"/>
+                        <DefaultButton type="submit" label="Post Comment" />
                     </div>
                 </form>
             </div>
