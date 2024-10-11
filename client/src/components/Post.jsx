@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import { Link } from "react-router-dom";
 import Head from "./Head";
 import { useState } from "react";
-import { likePost, togglePost, toggleLikedPosts } from "../store/postSlice";
+import { likePost, togglePost } from "../store/postSlice";
 import { HeartIcon, ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline";
 import {
     HeartIcon as HeartSolid,
@@ -74,13 +74,13 @@ function Post({
                     </Link>
                 </div>
             )}
-            <div className="w-full py-4 flex items-center justify-start gap-6"> {/* Adjusted gap here */}
+            <div className="w-full py-4 flex items-center justify-start gap-6">
                 {/* Like Section */}
-                <div className="flex items-center gap-1"> {/* Adjusted gap here */}
+                <div className="flex items-center gap-1">
                     <button
                         className="text-button-default hover:text-button-hover"
                         onClick={() => {
-                            dispatch(likePost(index)); // Dispatch the likePost action
+                            dispatch(likePost(index));
                         }}
                     >
                         <HeartIcon className={`size-6 ${currentPostLiked ? "hidden" : "block"}`}/>
@@ -92,7 +92,7 @@ function Post({
                 </div>
 
                 {/* Comments Section */}
-                <div className="flex items-center gap-1"> {/* Adjusted gap here */}
+                <div className="flex items-center gap-1">
                     <Link to={`/post/${index}`} className='flex items-center'>
                         <button className="text-button-default hover:text-button-hover">
                             <ChatBubbleOvalLeftIcon className="size-6"/>

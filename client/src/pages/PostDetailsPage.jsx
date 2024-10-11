@@ -4,7 +4,7 @@ import Post from "../components/Post";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { DefaultButton } from "../components/Buttons.jsx";
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'; // Updated import
+import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 
 function PostDetailsPage() {
     const { postId } = useParams();
@@ -15,7 +15,7 @@ function PostDetailsPage() {
     ]); // Sample comment data
 
     const [newComment, setNewComment] = useState("");
-    const [optionsOpen, setOptionsOpen] = useState(null); // Track which comment's options are open
+    const [optionsOpen, setOptionsOpen] = useState(null);
     const posts = useSelector((state) => state.post.posts);
     const postDetails = posts[postId];
 
