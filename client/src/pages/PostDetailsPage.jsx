@@ -100,8 +100,8 @@ function PostDetailsPage() {
                                 style={{
                                     overflow: 'hidden',
                                     display: 'block',
-                                    maxHeight: '6em', // Adjust this value based on the line height to control how many lines to show
-                                    lineHeight: '1.5em', // Set your desired line height here
+                                    maxHeight: '6em',
+                                    lineHeight: '1.5em',
                                 }}
                             >
                                 {comment.text}
