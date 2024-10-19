@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import image from "../assets/image (14) 1.png";
-import logo from "../assets/Logo.png";
+import logo from "@/assets/Logo.png";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { login, signup } from "../store/authSlice";
