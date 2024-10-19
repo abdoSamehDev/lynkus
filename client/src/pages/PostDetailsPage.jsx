@@ -173,7 +173,7 @@ function PostDetailsPage() {
             className="comment mb-4 p-4 border border-gray-200 rounded-lg shadow-sm bg-light-primaryBackground dark:bg-dark-primaryBackground flex items-start relative"
           >
             <img
-              src={post.post.authorId.profileImg}
+              src={comment.userId.profileImg}
               alt={`${comment.user}'s avatar`}
               className="w-10 h-10 rounded-full mr-4"
             />
@@ -199,7 +199,6 @@ function PostDetailsPage() {
                 </p>
               )}
             </div>
-
             <div className="relative">
               {comment.userId.id === currentUser.id ? (
                 <button
