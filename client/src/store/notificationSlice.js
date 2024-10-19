@@ -6,83 +6,6 @@ import { isAuthorized } from "../utils/checkAuth";
 const cookies = new Cookies();
 
 const initialState = {
-  //   notifications: [
-  //     {
-  //       type: "follow",
-  //       username: "sarah_j",
-  //       read: false,
-  //     },
-  //     {
-  //       type: "like",
-  //       username: "tech_guru42",
-  //       read: true,
-  //     },
-  //     {
-  //       type: "comment",
-  //       username: "coffee_lover",
-  //       read: false,
-  //     },
-  //     {
-  //       type: "follow",
-  //       username: "photo_master",
-  //       read: true,
-  //     },
-  //     {
-  //       type: "like",
-  //       username: "fitness_freak",
-  //       read: false,
-  //     },
-  //     {
-  //       type: "comment",
-  //       username: "bookworm99",
-  //       read: true,
-  //     },
-  //     {
-  //       type: "like",
-  //       username: "travel_addict",
-  //       read: false,
-  //     },
-  //     {
-  //       type: "follow",
-  //       username: "music_lover22",
-  //       read: true,
-  //     },
-  //     {
-  //       type: "comment",
-  //       username: "food_explorer",
-  //       read: false,
-  //     },
-  //     {
-  //       type: "like",
-  //       username: "art_enthusiast",
-  //       read: true,
-  //     },
-  //     {
-  //       type: "follow",
-  //       username: "nature_seeker",
-  //       read: false,
-  //     },
-  //     {
-  //       type: "comment",
-  //       username: "movie_buff",
-  //       read: true,
-  //     },
-  //     {
-  //       type: "like",
-  //       username: "pet_parent",
-  //       read: false,
-  //     },
-  //     {
-  //       type: "follow",
-  //       username: "code_ninja",
-  //       read: true,
-  //     },
-  //     {
-  //       type: "comment",
-  //       username: "fashion_icon",
-  //       read: false,
-  //     },
-  //   ],
   notifications: null,
   loading: true,
   err: null,
@@ -146,16 +69,13 @@ export const notificationSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllNotifications.pending, (state) => {
-        console.log("Getting all notifications...");
         state.loading = true;
       })
       .addCase(getAllNotifications.rejected, (state, action) => {
-        console.log("Error getting all notifications");
         state.loading = false;
         state.err = action.payload;
       })
       .addCase(getAllNotifications.fulfilled, (state, action) => {
-        console.log("Done getting all notifications");
         state.err = null;
 
         const newNotifications = action.payload.filter(
@@ -166,35 +86,22 @@ export const notificationSlice = createSlice({
         );
         state.notifications = action.payload;
         state.hasNewNotifications = newNotifications.length > 0;
-        console.log(state.notifications);
         state.loading = false;
       })
-      .addCase(clearNotification.pending, (state) => {
-        console.log("Clearing notification...");
-        // state.loading = true;
-      })
       .addCase(clearNotification.rejected, (state, action) => {
-        console.log("Error clearing notification");
         state.loading = false;
         state.err = action.payload;
       })
       .addCase(clearNotification.fulfilled, (state, action) => {
-        console.log("Done clearing notification");
         state.err = null;
         state.message = action.payload;
         state.loading = false;
       })
-      .addCase(clearAllNotifications.pending, (state) => {
-        console.log("Clearing all notifications...");
-        // state.loading = true;
-      })
       .addCase(clearAllNotifications.rejected, (state, action) => {
-        console.log("Error clearing all notifications");
         state.loading = false;
         state.err = action.payload;
       })
       .addCase(clearAllNotifications.fulfilled, (state, action) => {
-        console.log("Done clearing all notifications");
         state.err = null;
         state.message = action.payload;
         state.loading = false;

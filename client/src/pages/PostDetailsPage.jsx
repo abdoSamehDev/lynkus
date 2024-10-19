@@ -31,7 +31,6 @@ function PostDetailsPage() {
         setPost(postResponse.data);
 
         const commentsResponse = await api.get(`/comments/${postId}`);
-        console.log("commentsResponse", commentsResponse);
         setComments(commentsResponse.data);
       } catch (error) {
         console.error("Error fetching post or comments:", error);
@@ -168,92 +167,87 @@ function PostDetailsPage() {
         </h2>
 
         {/* Display the comments */}
-        {comments.map(
-          (comment, index) => (
-            console.log("comment", comment),
-            (
+        {comments.map((comment, index) => (
+          <div
+            key={comment.id || `comment-${index}`}
+            className="comment mb-4 p-4 border border-gray-200 rounded-lg shadow-sm bg-light-primaryBackground dark:bg-dark-primaryBackground flex items-start relative"
+          >
+            <img
+              src={post.post.authorId.profileImg}
+              alt={`${comment.user}'s avatar`}
+              className="w-10 h-10 rounded-full mr-4"
+            />
+            <div className="flex-grow space-y-1">
+              <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                {comment.userId.name}
+              </p>
+              <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                <span className="text-primary-600 dark:text-primary-400">
+                  @{comment.userId.userName}
+                </span>
+              </p>
+
+              {editingCommentId === comment._id ? (
+                <textarea
+                  value={editedCommentText}
+                  onChange={(e) => setEditedCommentText(e.target.value)}
+                  className="p-3 border border-gray-300 rounded-lg resize-none h-24 focus:outline-none focus:border-blue-500 transition-colors"
+                ></textarea>
+              ) : (
+                <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {comment.text}
+                </p>
+              )}
+            </div>
+
+            <div className="relative">
+              {comment.userId.id === currentUser.id ? (
+                <button
+                  onClick={() => toggleOptionsMenu(index)}
+                  className="ml-4 text-gray-600"
+                  aria-label="Options"
+                >
+                  <EllipsisVerticalIcon className="w-5 h-5" />
+                </button>
+              ) : null}
               <div
-                key={comment.id || `comment-${index}`}
-                className="comment mb-4 p-4 border border-gray-200 rounded-lg shadow-sm bg-light-primaryBackground dark:bg-dark-primaryBackground flex items-start relative"
+                ref={(el) => (optionsMenuRefs.current[index] = el)}
+                className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10"
+                style={{ display: "none" }}
               >
-                <img
-                  src={post.post.authorId.profileImg}
-                  alt={`${comment.user}'s avatar`}
-                  className="w-10 h-10 rounded-full mr-4"
-                />
-                <div className="flex-grow space-y-1">
-                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                    {comment.userId.name}
-                  </p>
-                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                    <span className="text-primary-600 dark:text-primary-400">
-                      @{comment.userId.userName}
-                    </span>
-                  </p>
-
-                  {editingCommentId === comment._id ? (
-                    <textarea
-                      value={editedCommentText}
-                      onChange={(e) => setEditedCommentText(e.target.value)}
-                      className="p-3 border border-gray-300 rounded-lg resize-none h-24 focus:outline-none focus:border-blue-500 transition-colors"
-                    ></textarea>
-                  ) : (
-                    <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed">
-                      {comment.text}
-                    </p>
-                  )}
-                </div>
-
-                <div className="relative">
-                  {comment.userId.id === currentUser.id ? (
-                    <button
-                      onClick={() => toggleOptionsMenu(index)}
-                      className="ml-4 text-gray-600"
-                      aria-label="Options"
-                    >
-                      <EllipsisVerticalIcon className="w-5 h-5" />
-                    </button>
+                <ul className="py-1">
+                  {comment.userId._Id === currentUser.id ? (
+                    <>
+                      <li
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handleDeleteComment(comment._id)}
+                      >
+                        Delete
+                      </li>
+                      {editingCommentId === comment._id ? (
+                        <li
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => handleSaveComment(comment._id)}
+                        >
+                          Save
+                        </li>
+                      ) : (
+                        <li
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() =>
+                            handleModifyComment(comment._id, comment.text)
+                          }
+                        >
+                          Modify
+                        </li>
+                      )}
+                    </>
                   ) : null}
-                  <div
-                    ref={(el) => (optionsMenuRefs.current[index] = el)}
-                    className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10"
-                    style={{ display: "none" }}
-                  >
-                    <ul className="py-1">
-                      {comment.userId._Id === currentUser.id ? (
-                        <>
-                          <li
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                            onClick={() => handleDeleteComment(comment._id)}
-                          >
-                            Delete
-                          </li>
-                          {editingCommentId === comment._id ? (
-                            <li
-                              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                              onClick={() => handleSaveComment(comment._id)}
-                            >
-                              Save
-                            </li>
-                          ) : (
-                            <li
-                              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                              onClick={() =>
-                                handleModifyComment(comment._id, comment.text)
-                              }
-                            >
-                              Modify
-                            </li>
-                          )}
-                        </>
-                      ) : null}
-                    </ul>
-                  </div>
-                </div>
+                </ul>
               </div>
-            )
-          )
-        )}
+            </div>
+          </div>
+        ))}
 
         <form
           onSubmit={handleCommentSubmit}

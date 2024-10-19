@@ -58,8 +58,6 @@ const UpdatePostModal = ({
         },
       });
 
-      console.log("Post updated successfully:", response.data);
-
       // Handle success (you can show a success message, close the modal, etc.)
       setOpenModal(false);
       window.location.reload();
