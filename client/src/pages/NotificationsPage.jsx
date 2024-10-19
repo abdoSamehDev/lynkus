@@ -4,7 +4,6 @@ import {
   clearAllNotifications,
   clearNotification,
   getAllNotifications,
-  readNotification,
 } from "../store/notificationSlice";
 import { useEffect } from "react";
 import LoadingPage from "./LoadingPage";
@@ -30,14 +29,14 @@ function NotificationsPage() {
         <SecondaryErrorButton
           label="Clear All"
           Icon={XMarkIcon}
-          onClick={() => {
-            console.log("CLEARED ALL NOTIFICATIONS");
-            dispatch(clearAllNotifications());
+          onClick={async () => {
+            await dispatch(clearAllNotifications());
+            await dispatch(getAllNotifications());
           }}
         />
       </div>
 
-      {loading && (
+      {(loading || !notifications) && !err && (
         <div className="w-full h-full flex items-center justify-center text-light-primaryText dark:text-dark-primaryText opacity-80">
           <LoadingPage />
         </div>
@@ -48,25 +47,21 @@ function NotificationsPage() {
         </div>
       )}
 
-      {notifications.length == 0 && !loading && !err ? (
+      {notifications?.length == 0 && !loading && !err ? (
         <div className="w-full h-full flex items-center justify-center text-light-primaryText dark:text-dark-primaryText opacity-80">
           <p>You have no notifications yet!</p>
         </div>
       ) : (
-        notifications.map((notification, index) => {
+        notifications?.map((notification, index) => {
           return (
             <NotificationItem
               key={index}
-              from={notification.content.split(" ")[0]}
+              from={notification.from.userName}
               read={notification.read}
               type={notification.type}
-              toggleRead={() => {
-                dispatch(readNotification(index));
-                dispatch(getAllNotifications());
-              }}
-              delFunction={() => {
-                dispatch(clearNotification(notification._id));
-                dispatch(getAllNotifications());
+              delFunction={async () => {
+                await dispatch(clearNotification(notification._id));
+                await dispatch(getAllNotifications());
               }}
             />
           );

@@ -10,17 +10,25 @@ import {
 import { toggleTheme } from "../store/themeSlice";
 import { logout } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../utils/axios";
 import { fetchPosts } from "../store/postSlice";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import LoadingSpinner from "./LoadingSpinner";
 
 function CreatePost({ profileImg }) {
   const theme = useSelector((state) => state.theme.theme);
   const darkMode = theme === "dark";
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
   const [postBody, setPostBody] = useState("");
+  const [postCreation, setPostCreation] = useState("false");
+
+  useEffect(() => {
+    setPostCreation(false);
+  }, []);
 
   const changeTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
@@ -36,6 +44,8 @@ function CreatePost({ profileImg }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setPostCreation(true);
+
     try {
       const postData = new FormData();
 
@@ -49,14 +59,20 @@ function CreatePost({ profileImg }) {
           "Content-Type": "multipart/form-data",
         },
       });
+
+      setPostBody("");
+      setImage(null);
       dispatch(fetchPosts());
     } catch (error) {
-      console.log(error);
+      toast.error(`Failed to create post! ${error}`);
+    } finally {
+      setPostCreation(false);
     }
   };
 
   return (
     <>
+      <ToastContainer />
       {/* Mobile Dark Toggle & Sign out */}
       <div className=" w-full bg-dark-secondaryBackground md:hidden flex justify-between items-center py-2 px-4">
         <img src={logo} className="h-14 rounded-full object-cover" alt="Logo" />
@@ -134,7 +150,7 @@ function CreatePost({ profileImg }) {
             type="submit"
             className="font-semibold rounded-3xl text-sm px-6 py-2 text-center text-dark-primaryText bg-button-default hover:bg-button-hover"
           >
-            Post
+            {postCreation ? <LoadingSpinner size="sm" /> : "Post"}
           </button>
         </div>
       </form>

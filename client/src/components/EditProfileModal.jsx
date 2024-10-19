@@ -6,7 +6,11 @@ import { Modal, Label, TextInput, Textarea } from "flowbite-react";
 import { DefaultButton, SecondaryButton } from "./Buttons";
 import { capitalizeName, formatImageUrl } from "../utils/helpers";
 import { useDispatch, useSelector } from "react-redux";
-import { editUserProfile } from "../store/userSlice";
+import {
+  editUserProfile,
+  fetchUserData,
+  getUserData,
+} from "../store/userSlice";
 import {
   modalTheme,
   textAreaTheme,
@@ -20,8 +24,7 @@ const EditProfileModal = ({ openModal, setOpenModal }) => {
     headerImg: null,
   });
   const dispatch = useDispatch();
-  const { userData, loading, err } = useSelector((state) => state.user);
-  console.log(userData);
+  const { authUserData, loading, err } = useSelector((state) => state.user);
 
   const {
     register,
@@ -29,8 +32,8 @@ const EditProfileModal = ({ openModal, setOpenModal }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      ...userData,
-      name: capitalizeName(userData.name),
+      ...authUserData.data,
+      name: capitalizeName(authUserData.data.name),
     },
   });
 
@@ -41,7 +44,8 @@ const EditProfileModal = ({ openModal, setOpenModal }) => {
     }
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    setOpenModal(false);
     const formData = new FormData();
 
     // Append text fields
@@ -59,18 +63,18 @@ const EditProfileModal = ({ openModal, setOpenModal }) => {
     });
 
     const objData = {};
-    // console.log("FormData to be sent to API:");
     for (let [key, value] of formData.entries()) {
-      // console.log(key, value);
       objData[key] = value;
     }
-    console.log("FormData to be sent to API:");
-    console.log(objData);
 
-    dispatch(editUserProfile(objData));
+    await dispatch(editUserProfile(objData)).unwrap();
+
+    // After editUserProfile is fulfilled, dispatch getUserData
+    await dispatch(fetchUserData(authUserData.data?.id)).unwrap();
+
+    await dispatch(getUserData(authUserData.data?.userName)).unwrap();
     if (!loading && !err) {
       dispatch(toggleAlert());
-      setOpenModal(false);
     }
   };
 
@@ -86,8 +90,8 @@ const EditProfileModal = ({ openModal, setOpenModal }) => {
           src={
             imageFiles[fieldName]
               ? URL.createObjectURL(imageFiles[fieldName])
-              : userData[fieldName]
-              ? formatImageUrl(userData[fieldName], fieldName)
+              : authUserData.data[fieldName]
+              ? formatImageUrl(authUserData.data[fieldName], fieldName)
               : "https://placeholder.pics/svg/700/DEDEDE/DEDEDE/"
           }
           alt={`${fieldName} preview`}
@@ -161,9 +165,6 @@ const EditProfileModal = ({ openModal, setOpenModal }) => {
           {renderImageUpload("headerImg", "Header Image")}
           {renderImageUpload("profileImg", "Profile Picture")}
           {renderTextInput("name", "Name", { required: "Name is required" })}
-          {renderTextInput("userName", "Username", {
-            required: "Username is required",
-          })}
           <div>
             <Label
               htmlFor="bio"

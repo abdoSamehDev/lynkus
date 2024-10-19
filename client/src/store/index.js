@@ -4,6 +4,7 @@ import userSlice from "./userSlice";
 import postSlice from "./postSlice";
 import notificationSlice from "./notificationSlice";
 import authReducer from "./authSlice";
+import searchReducer from "./searchSlice";
 import appSlice from "./appSlice";
 
 export const store = configureStore({
@@ -14,5 +15,6 @@ export const store = configureStore({
     post: postSlice,
     notification: notificationSlice,
     auth: authReducer,
+    search: searchReducer,
   },
 });

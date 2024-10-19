@@ -1,52 +1,76 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import logo from "../assets/logo.png";
 import api, { setAuthToken } from "../utils/axios";
 import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
-const token = cookies.get("token");
+const token = cookies.get("token") || null;
 const cookieUserData = cookies.get("user");
 
 const initialState = {
-  // Dummy data (replace with actual data fetching logic later)
-  // userData: {
-  //   name: "Sam Guy",
-  //   userName: "samguy",
-  //   // bio: "Lorem ipsum odor amet, consectetuer adipiscing elit. Congue lectus fermentum nisl accumsan ut fames amet justo.",
-  //   bio: "",
-  //   profileImg:
-  //     "https://avatar.iran.liara.run/username?username=Lynkus&background=008080&color=F0F8FF&length=1",
-  //   headerImg: "https://placeholder.pics/svg/700/DEDEDE/DEDEDE/",
-  // },
-  userData: cookieUserData,
-  userPosts: [],
-  userLikedPosts: [],
-  userFollowers: [],
-  userFollowings: [],
+  authUserData: cookieUserData || {},
+  userData: {},
+  isOwnProfile: false,
+  userPosts: null,
+  userLikedPosts: null,
+  userFollowers: null,
+  userFollowings: null,
   userRecommendation: [],
   message: null,
-  users: [
-    { name: "User One", username: "@Hat", profileImg: logo },
-    { name: "User Two", username: "@Fat", profileImg: logo },
-    { name: "User Three", username: "@Bat", profileImg: logo },
-    { name: "User Four", username: "@Mat", profileImg: logo },
-  ],
-  loading: true,
+  loading: false,
   err: null,
 };
 
+export const fetchUserDataFromCookies = createAsyncThunk(
+  "user/fetchUserDataFromCookies",
+  async (_, { rejectWithValue }) => {
+    try {
+      const userData = cookies.get("user");
+      if (userData) {
+        return userData;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return rejectWithValue("Failed to fetch user data from cookies" + error);
+    }
+  }
+);
+
 //API CALLS
+export const fetchUserData = createAsyncThunk(
+  "user/fetchUserData",
+  async (userId, { rejectWithValue }) => {
+    try {
+      setAuthToken(token);
+      const [posts, likedPosts, followers, followings] = await Promise.all([
+        api.get(`/posts/user/${userId}`),
+        api.get(`/posts/likes/${userId}`),
+        api.get(`/follows/followers/${userId}?page=1&limit=50`),
+        api.get(`/follows/following/${userId}?page=1&limit=50`),
+      ]);
+      return {
+        posts: posts.data,
+        likedPosts: likedPosts.data,
+        followers: followers.data.data,
+        followings: followings.data.data,
+      };
+    } catch (e) {
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to fetch user data"
+      );
+    }
+  }
+);
 
 export const recommendedUsers = createAsyncThunk(
   "user/recommendedUsers",
   async (_, { rejectWithValue }) => {
     try {
+      setAuthToken(token);
       const res = await api.get(`/follows/recommended`);
-      console.log(res.data.recommendedUsers);
       return res.data.recommendedUsers;
     } catch (e) {
-      console.log(e);
       return rejectWithValue(e.response.data.message);
     }
   }
@@ -58,10 +82,8 @@ export const getUserData = createAsyncThunk(
     try {
       setAuthToken(token);
       const res = await api.get(`/users/profile/${username}`);
-      // const res = await api.get(`/users/profile/3bkr`);
-      return res.data.data;
+      return res.data;
     } catch (e) {
-      console.log(e);
       return rejectWithValue(e.response.data.message);
     }
   }
@@ -72,9 +94,6 @@ export const editUserProfile = createAsyncThunk(
   async (updatedData, { rejectWithValue }) => {
     try {
       setAuthToken(token);
-      console.log("UPDATING USER DATA: ");
-      console.log(updatedData);
-
       const res = await api.put("/users", updatedData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -82,7 +101,6 @@ export const editUserProfile = createAsyncThunk(
       });
       return res.data.data;
     } catch (e) {
-      console.log(e);
       return rejectWithValue(e.response.data.message);
     }
   }
@@ -94,73 +112,12 @@ export const deleteUserProfile = createAsyncThunk(
     try {
       setAuthToken(token);
       const res = await api.delete("/users");
-      console.log("DELETED");
-      console.log(res.data.message);
-
       return res.data.message;
     } catch (e) {
-      console.log(e);
       return rejectWithValue(e.response.data.message);
     }
   }
 );
-
-export const getUserPosts = createAsyncThunk(
-  "user/getUserPosts",
-  async (userId, { rejectWithValue }) => {
-    try {
-      setAuthToken(token);
-      const res = await api.get(`/posts/user/${userId}`);
-      return res.data;
-    } catch (e) {
-      console.log(e);
-      return rejectWithValue(e.response.data.message);
-    }
-  }
-);
-
-export const getUserLikedPosts = createAsyncThunk(
-  "user/getUserLikedPosts",
-  async (userId, { rejectWithValue }) => {
-    try {
-      setAuthToken(token);
-      const res = await api.get(`/posts/likes/${userId}`);
-      return res.data;
-    } catch (e) {
-      console.log(e);
-      return rejectWithValue(e.response.data.message);
-    }
-  }
-);
-
-export const getUserFollowers = createAsyncThunk(
-  "user/getUserFollowers",
-  async (userId, { rejectWithValue }) => {
-    try {
-      setAuthToken(token);
-      const res = await api.get(`/follows/followers/${userId}?page=1&limit=50`);
-      return res.data.data;
-    } catch (e) {
-      console.log(e);
-      return rejectWithValue(e.response.data.message);
-    }
-  }
-);
-
-export const getUserFollowings = createAsyncThunk(
-  "user/getUserFollowings",
-  async (userId, { rejectWithValue }) => {
-    try {
-      setAuthToken(token);
-      const res = await api.get(`/follows/following/${userId}?page=1&limit=50`);
-      return res.data.data;
-    } catch (e) {
-      console.log(e);
-      return rejectWithValue(e.response.data.message);
-    }
-  }
-);
-
 export const toggleFollow = createAsyncThunk(
   "user/toggleFollow",
   async (userId, { rejectWithValue }) => {
@@ -169,7 +126,21 @@ export const toggleFollow = createAsyncThunk(
       const res = await api.post(`/follows/${userId}`);
       return res.data.message;
     } catch (e) {
-      console.log(e);
+      return rejectWithValue(e.response.data.message);
+    }
+  }
+);
+
+export const toggleLikeUserPost = createAsyncThunk(
+  "user/toggleLikeUserPost",
+  async (postId, { rejectWithValue }) => {
+    try {
+      setAuthToken(token);
+      const res = await api.post(`/likes`, {
+        postId: postId,
+      });
+      return res.data.message;
+    } catch (e) {
       return rejectWithValue(e.response.data.message);
     }
   }
@@ -179,157 +150,125 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    fetchUserDataFromCookies: (state) => {
+    clearUserData: (state) => {
+      state.userData = null;
+      state.userPosts = null;
+      state.userLikedPosts = null;
+      state.userFollowers = null;
+      state.userFollowings = null;
+    },
+    checkOwnProfile: (state, action) => {
       const userData = cookies.get("user");
       if (userData) {
-        console.log(userData);
-        state.userData = userData;
-        console.log("FETCHED USER DATA FROM COOKIES");
+        const username = state.authUserData.userName
+          ? state.authUserData?.userName
+          : state.authUserData.data?.userName;
+        state.isOwnProfile = username === action.payload;
       } else {
-        console.log("NO USER DATA FROM COOKIES");
+        state.isOwnProfile = false;
       }
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getUserData.pending, (state) => {
-        console.log("Getting user data...");
+      .addCase(fetchUserDataFromCookies.pending, (state) => {
         state.loading = true;
       })
+      .addCase(fetchUserDataFromCookies.fulfilled, (state, action) => {
+        state.loading = false;
+        state.authUserData = action.payload;
+      })
+      .addCase(fetchUserDataFromCookies.rejected, (state, action) => {
+        state.loading = false;
+        state.err = action.payload;
+      })
+      .addCase(getUserData.pending, (state) => {
+        state.err = null;
+      })
       .addCase(getUserData.rejected, (state, action) => {
-        console.log("Error getting user data");
         state.loading = false;
         state.err = action.payload;
       })
       .addCase(getUserData.fulfilled, (state, action) => {
         state.err = null;
-        console.log("Done getting user data");
-        console.log(action.payload);
-        state.userData = { ...state.userData, ...action.payload };
+        if (state.isOwnProfile) {
+          state.authUserData = action.payload;
+          cookies.set("user", JSON.stringify(action.payload), { path: "/" });
+        } else {
+          state.userData = action.payload;
+        }
         state.loading = false;
       })
+      .addCase(fetchUserData.pending, (state) => {
+        // state.loading = true;
+        state.err = null;
+      })
+      .addCase(fetchUserData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userPosts = action.payload.posts;
+        state.userLikedPosts = action.payload.likedPosts;
+        state.userFollowers = action.payload.followers;
+        state.userFollowings = action.payload.followings;
+      })
+      .addCase(fetchUserData.rejected, (state, action) => {
+        state.loading = false;
+        state.err = action.payload;
+      })
       .addCase(editUserProfile.pending, (state) => {
-        console.log("Updating user data...");
         state.loading = true;
+        state.err = null;
       })
       .addCase(editUserProfile.rejected, (state, action) => {
-        console.log("Error updating user data");
         state.loading = false;
         state.err = action.payload;
       })
       .addCase(editUserProfile.fulfilled, (state, action) => {
         state.err = null;
-        console.log("Done updating user data");
-        state.userData = { ...state.userData, ...action.payload };
+        state.authUserData = { ...state.authUserData, ...action.payload };
         state.loading = false;
       })
       .addCase(deleteUserProfile.pending, (state) => {
-        console.log("Deleting user profile...");
         state.loading = true;
+        state.err = null;
       })
       .addCase(deleteUserProfile.rejected, (state, action) => {
-        console.log("Error deleting user profile");
         state.loading = false;
         state.err = action.payload;
       })
       .addCase(deleteUserProfile.fulfilled, (state, action) => {
         state.err = null;
-        console.log("Done deleting user profile");
         state.message = action.payload;
         state.loading = false;
       })
-      .addCase(getUserPosts.pending, (state) => {
-        console.log("Getting user posts...");
-        state.loading = true;
-      })
-      .addCase(getUserPosts.rejected, (state, action) => {
-        console.log("Error getting user posts");
-        state.loading = false;
-        state.err = action.payload;
-      })
-      .addCase(getUserPosts.fulfilled, (state, action) => {
-        state.err = null;
-        console.log("Done getting user posts");
-        state.userPosts = action.payload;
-        state.loading = false;
-      })
-      .addCase(getUserLikedPosts.pending, (state) => {
-        console.log("Getting user liked posts...");
-        state.loading = true;
-      })
-      .addCase(getUserLikedPosts.rejected, (state, action) => {
-        console.log("Error getting user liked posts");
-        state.loading = false;
-        state.err = action.payload;
-      })
-      .addCase(getUserLikedPosts.fulfilled, (state, action) => {
-        state.err = null;
-        console.log("Done getting user liked posts");
-        state.userLikedPosts = action.payload;
-        state.loading = false;
-      })
-      .addCase(getUserFollowers.pending, (state) => {
-        console.log("Getting user followers...");
-        state.loading = true;
-      })
-      .addCase(getUserFollowers.rejected, (state, action) => {
-        console.log("Error getting user followers");
-        state.loading = false;
-        state.err = action.payload;
-      })
-      .addCase(getUserFollowers.fulfilled, (state, action) => {
-        state.err = null;
-        console.log("Done getting user followers");
-        state.userFollowers = action.payload;
-        state.loading = false;
-      })
-      .addCase(getUserFollowings.pending, (state) => {
-        console.log("Getting user followings...");
-        state.loading = true;
-      })
-      .addCase(getUserFollowings.rejected, (state, action) => {
-        console.log("Error getting user followings");
-        state.loading = false;
-        state.err = action.payload;
-      })
-      .addCase(getUserFollowings.fulfilled, (state, action) => {
-        state.err = null;
-        console.log("Done getting user followings");
-        state.userFollowings = action.payload;
-        state.loading = false;
-      })
-      .addCase(toggleFollow.pending, (state) => {
-        console.log("Toggle Follow...");
-        state.loading = true;
-      })
-      .addCase(toggleFollow.rejected, (state, action) => {
-        console.log("Error Toggling Follow");
-        state.loading = false;
-        state.err = action.payload;
-      })
       .addCase(toggleFollow.fulfilled, (state, action) => {
         state.err = null;
-        console.log("Done Toggling Follow");
         state.message = action.payload;
         state.loading = false;
       })
       .addCase(recommendedUsers.pending, (state) => {
-        console.log("Getting recommended users...");
         state.loading = true;
+        state.err = null;
       })
       .addCase(recommendedUsers.rejected, (state, action) => {
-        console.log("Error getting recommended users");
         state.loading = false;
         state.err = action.payload;
       })
       .addCase(recommendedUsers.fulfilled, (state, action) => {
-        console.log("Done getting recommended users");
         state.userRecommendation = action.payload;
         state.loading = false;
+      })
+      .addCase(toggleLikeUserPost.fulfilled, (state) => {
+        state.err = null;
+        state.loading = false;
+      })
+      .addCase(toggleLikeUserPost.rejected, (state, action) => {
+        state.loading = false;
+        state.err = action.payload.message;
       });
   },
 });
 
-export const { fetchUserDataFromCookies } = userSlice.actions;
+// export const { fetchUserDataFromCookies, checkOwnProfile } = userSlice.actions;
+export const { checkOwnProfile, clearUserData } = userSlice.actions;
 
 export default userSlice.reducer;

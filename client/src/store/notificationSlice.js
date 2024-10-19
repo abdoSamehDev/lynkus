@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api, { setAuthToken } from "../utils/axios";
 import Cookies from "universal-cookie";
+import { isAuthorized } from "../utils/checkAuth";
 
 const cookies = new Cookies();
 
@@ -82,7 +83,7 @@ const initialState = {
   //       read: false,
   //     },
   //   ],
-  notifications: [],
+  notifications: null,
   loading: true,
   err: null,
   message: null,
@@ -96,9 +97,11 @@ export const getAllNotifications = createAsyncThunk(
   "notifications/getAllNotifications",
   async (_, { rejectWithValue }) => {
     try {
-      setAuthToken(token);
-      const res = await api.get("/notifications");
-      return res.data.Notifications;
+      if (isAuthorized()) {
+        setAuthToken(token);
+        const res = await api.get("/notifications");
+        return res.data.Notifications;
+      }
     } catch (e) {
       return rejectWithValue(e.response.data.message);
     }
@@ -157,20 +160,18 @@ export const notificationSlice = createSlice({
 
         const newNotifications = action.payload.filter(
           (newNotification) =>
-            !state.notifications.some(
+            !state.notifications?.some(
               (oldNotification) => oldNotification.id === newNotification.id
             )
         );
         state.notifications = action.payload;
-        state.hasNewNotifications =
-          newNotifications.length > 0 ||
-          state.notifications.some((n) => !n.read);
+        state.hasNewNotifications = newNotifications.length > 0;
         console.log(state.notifications);
         state.loading = false;
       })
       .addCase(clearNotification.pending, (state) => {
         console.log("Clearing notification...");
-        state.loading = true;
+        // state.loading = true;
       })
       .addCase(clearNotification.rejected, (state, action) => {
         console.log("Error clearing notification");
@@ -185,7 +186,7 @@ export const notificationSlice = createSlice({
       })
       .addCase(clearAllNotifications.pending, (state) => {
         console.log("Clearing all notifications...");
-        state.loading = true;
+        // state.loading = true;
       })
       .addCase(clearAllNotifications.rejected, (state, action) => {
         console.log("Error clearing all notifications");

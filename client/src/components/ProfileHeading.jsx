@@ -2,14 +2,16 @@
 import { DefaultButton, ErrorButton } from "./Buttons";
 import {
   LinkIcon,
+  LinkSlashIcon,
   PencilSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/solid";
 import { Avatar } from "flowbite-react";
 import { capitalizeName, formatImageUrl } from "../utils/helpers";
 import { useDispatch } from "react-redux";
-import { toggleFollow } from "../store/userSlice";
-import { useEffect } from "react";
+import { fetchUserData, getUserData, toggleFollow } from "../store/userSlice";
+import { useState } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 
 function ProfileHeading({
   isOwnProfile,
@@ -19,14 +21,16 @@ function ProfileHeading({
   loading,
 }) {
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log("USER HEADING DATA: ");
-    console.log(userData);
-  }, []);
-
-  const headerImg = formatImageUrl(userData.headerImg, "headerImg");
-  const profileImg = formatImageUrl(userData.profileImg, "profileImg");
+  const headerImg = formatImageUrl(
+    userData?.data?.headerImg || userData?.headerImg,
+    "headerImg"
+  );
+  const profileImg = formatImageUrl(
+    userData?.data?.profileImg || userData?.profileImg,
+    "profileImg"
+  );
+  const [isFollowed, setIsFollowed] = useState(userData?.isFollowing);
+  const [followLoading, setFollowLoading] = useState(false);
 
   return (
     <div className="w-full min-h-[300px] md:min-h-[450px] pb-[30px] bg-light-secondaryBackground dark:bg-dark-secondaryBackground">
@@ -37,7 +41,7 @@ function ProfileHeading({
           <img
             alt="header-image"
             src={`${
-              userData.headerImg
+              headerImg
                 ? headerImg
                 : "https://placeholder.pics/svg/700/DEDEDE/DEDEDE/"
             }`}
@@ -50,14 +54,16 @@ function ProfileHeading({
           <div className="absolute z-30 left-1/2 transform -translate-x-1/2 -bottom-12 md:-bottom-16 size-[90px] md:size-[150px] rounded-full border-4 border-light-accent dark:border-dark-accent flex items-center justify-center">
             <Avatar
               img={`${
-                userData.profileImg
+                profileImg
                   ? profileImg
-                  : `https://avatar.iran.liara.run/username?username=${userData.name}&background=008080&color=F0F8FF`
+                  : `https://avatar.iran.liara.run/username?username=${
+                      userData?.data?.name || userData?.name
+                    }&background=008080&color=F0F8FF`
               }`}
               alt="user-avatar"
               rounded
-              size="lg"
-              className="object-cover self-center items-center"
+              size="2xl"
+              className="object-cover self-center items-center "
             />
           </div>
         </div>
@@ -68,10 +74,11 @@ function ProfileHeading({
           {/* NAME AND USERNAME*/}
           <div className="flex flex-col w-2/5">
             <h2 className="font-bold text-2xl xl:text-3xl">
-              {capitalizeName(userData.name)}
+              {capitalizeName(userData?.data?.name) ||
+                capitalizeName(userData?.name)}
             </h2>
             <p className="text-light-secondaryText dark:text-dark-secondaryText">
-              @{userData.userName}
+              @{userData?.data?.userName || userData?.userName}
             </p>
           </div>
           {/* ACTIONS */}
@@ -93,20 +100,43 @@ function ProfileHeading({
               Loading...
             </div>
           ) : (
-            <div className="flex flex-col  gap-[10px] ">
-              <DefaultButton
-                label={"Link"}
-                Icon={LinkIcon}
-                onClick={() => {
-                  dispatch(toggleFollow(userData.id));
-                }}
-              />
-              {/* <SecondaryButton label={"Message"} /> */}
+            <div className="flex flex-col gap-[10px] ">
+              {followLoading ? (
+                <LoadingSpinner />
+              ) : (
+                <DefaultButton
+                  Icon={
+                    userData?.isFollowing || isFollowed
+                      ? LinkSlashIcon
+                      : LinkIcon
+                  }
+                  label={
+                    userData?.isFollowing || isFollowed ? "Unlink" : "Link"
+                  }
+                  onClick={async () => {
+                    setFollowLoading(true);
+                    await dispatch(
+                      toggleFollow(userData?.data?.id || userData?.id)
+                    ).unwrap();
+                    await dispatch(
+                      fetchUserData(userData?.data?.id || userData?.id)
+                    ).unwrap();
+
+                    await dispatch(
+                      getUserData(
+                        userData?.data?.userName || userData?.userName
+                      )
+                    ).unwrap();
+                    setIsFollowed(!userData?.isFollowing);
+                    setFollowLoading(false);
+                  }}
+                />
+              )}
             </div>
           )}
         </div>
         {/* BIO */}
-        <p className="text-sm">{userData.bio}</p>
+        <p className="text-sm">{userData?.data?.bio || userData?.bio}</p>
       </div>
     </div>
   );

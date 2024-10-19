@@ -1,8 +1,10 @@
 export function capitalizeName(name) {
-  return name
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize first letter of each word
-    .join(" ");
+  if (name) {
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize first letter of each word
+      .join(" ");
+  }
 }
 
 const BASE_URL = "https://lynkus-3.onrender.com";

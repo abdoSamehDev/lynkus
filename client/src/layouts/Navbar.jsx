@@ -7,7 +7,6 @@ import {
   MagnifyingGlassIcon,
   BellIcon,
   UserIcon,
-  // EnvelopeIcon,
   SunIcon,
   MoonIcon,
   ArrowLeftStartOnRectangleIcon,
@@ -17,18 +16,16 @@ import {
   MagnifyingGlassIcon as MagnifyingGlassSolid,
   BellIcon as BellSolid,
   UserIcon as UserSolid,
-  // EnvelopeIcon as EnvelopeSolid,
 } from "@heroicons/react/24/solid";
 import { DefaultButton, ErrorButton } from "../components/Buttons";
 import { toggleTheme } from "../store/themeSlice";
 
 function Navbar() {
-  const { userData } = useSelector((state) => state.user);
+  const { authUserData } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
   const theme = useSelector((state) => state.theme.theme);
-  // const hasNewNotifications = true;
   const hasNewNotifications = useSelector(
     (state) => state.notification.hasNewNotifications
   );
@@ -61,8 +58,7 @@ function Navbar() {
               alt="Logo"
             />
           </Link>
-
-          <ul className="w-full md:min-h-96 h-full flex md:flex-col items-center justify-between md:justify-start md:mt-20 lg:ml-24 md:gap-14 lg:gap-5 order-1 font-medium">
+          <ul className="w-full md:min-h-80 h-full flex md:flex-col items-center justify-between md:justify-start md:mt-20 lg:ml-24 md:gap-14 lg:gap-5 order-1 font-medium">
             <li className="w-full lg:flex items-center">
               <Link to={"/"} className="flex justify-center items-center gap-2">
                 {pathname == "/" ? (
@@ -81,17 +77,31 @@ function Navbar() {
             </li>
             <li className="w-full lg:flex items-center">
               <Link
-                to={`/user/${userData.userName}`}
+                to={`/user/${
+                  authUserData?.userName
+                    ? authUserData?.userName
+                    : authUserData.data?.userName
+                }`}
                 className="flex justify-center items-center gap-2"
               >
-                {pathname == `/user/${userData.userName}` ? (
+                {pathname ==
+                `/user/${
+                  authUserData?.userName
+                    ? authUserData?.userName
+                    : authUserData.data?.userName
+                }` ? (
                   <UserSolid className="size-7 text-button-default hover:text-button-hover" />
                 ) : (
                   <UserIcon className="size-6 text-button-default hover:text-button-hover" />
                 )}
                 <p
                   className={`hidden lg:block ${
-                    pathname == `/user/${userData.userName}`
+                    pathname ==
+                    `/user/${
+                      authUserData?.userName
+                        ? authUserData?.userName
+                        : authUserData.data?.userName
+                    }`
                       ? "text-3xl"
                       : "text-2xl"
                   } font-bold text-light-primaryText hover:text-button-hover dark:text-dark-primaryText dark:hover:text-button-hover`}
@@ -101,15 +111,18 @@ function Navbar() {
               </Link>
             </li>
             <li className="w-full lg:flex items-center">
-              <Link to={"/"} className="flex justify-center items-center gap-2">
-                {pathname == "" ? (
+              <Link
+                to={"/search"}
+                className="flex justify-center items-center gap-2"
+              >
+                {pathname == "/search" ? (
                   <MagnifyingGlassSolid className="size-7 text-button-default hover:text-button-hover" />
                 ) : (
                   <MagnifyingGlassIcon className="size-6 text-button-default hover:text-button-hover" />
                 )}
                 <p
                   className={`hidden lg:block ${
-                    pathname == "" ? "text-3xl" : "text-2xl"
+                    pathname == "/search" ? "text-3xl" : "text-2xl"
                   } font-bold text-light-primaryText hover:text-button-hover dark:text-dark-primaryText dark:hover:text-button-hover`}
                 >
                   Search
@@ -140,23 +153,6 @@ function Navbar() {
                 </p>
               </Link>
             </li>
-            {/* CHAT BONUS */}
-            {/* <li className="w-full lg:flex items-center">
-              <Link to={"/"} className="flex justify-center items-center gap-2">
-                {pathname == "" ? (
-                  <EnvelopeSolid className="size-7 text-button-default hover:text-button-hover" />
-                ) : (
-                  <EnvelopeIcon className="size-6 text-button-default hover:text-button-hover" />
-                )}
-                <p
-                  className={`hidden lg:block ${
-                    pathname == "" ? "text-3xl" : "text-2xl"
-                  } font-bold text-light-primaryText hover:text-button-hover dark:text-dark-primaryText dark:hover:text-button-hover`}
-                >
-                  Chat
-                </p>
-              </Link>
-            </li> */}
           </ul>
           <div className="hidden mb-4 lg:flex flex-col gap-4 order-2 w-3/4">
             {/* <DefaultButton label={"Dark Mode"} /> */}

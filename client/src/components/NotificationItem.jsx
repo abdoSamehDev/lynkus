@@ -2,17 +2,9 @@
 import { ChatBubbleOvalLeftIcon, LinkIcon } from "@heroicons/react/24/outline";
 import { HeartIcon, TrashIcon } from "@heroicons/react/24/solid";
 
-function NotificationItem({ type, from, read, toggleRead, delFunction }) {
+function NotificationItem({ type, from, delFunction }) {
   return (
-    <div
-      className="w-full flex justify-between items-center px-[30px] py-[25px] border-t border-light-secondaryText dark:border-dark-secondaryText "
-      // className={`w-full flex justify-between items-center px-[30px] py-[25px] border-t border-light-secondaryText dark:border-dark-secondaryText cursor-pointer ${
-      //   !read
-      //     ? "bg-light-secondaryBackground dark:bg-dark-secondaryBackground"
-      //     : ""
-      // }`}
-      onClick={toggleRead}
-    >
+    <div className="w-full flex justify-between items-center px-[30px] py-[25px] border-t border-light-secondaryText dark:border-dark-secondaryText ">
       <div className="flex justify-start items-center gap-[15px] ">
         {type == "FOLLOW" ? (
           <LinkIcon className="size-[24px] xl:size-5  text-button-default" />

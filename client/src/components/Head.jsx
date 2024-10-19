@@ -8,10 +8,10 @@ function Head({ username, name, profileImg }) {
         alt="Logo"
       />
       <div className="flex flex-col">
-        <p className="text-light-primaryText font-semibold dark:text-dark-primaryText line-clamp-1">
+        <p className="text-light-primaryText font-semibold text-xl dark:text-dark-primaryText line-clamp-1">
           {name}
         </p>
-        <p className="text-light-secondaryText font-medium dark:text-dark-secondaryText line-clamp-1">
+        <p className="text-light-secondaryText font-medium text-sm dark:text-dark-secondaryText line-clamp-1">
           @{username}
         </p>
       </div>

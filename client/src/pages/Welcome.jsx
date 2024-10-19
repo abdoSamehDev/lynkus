@@ -47,9 +47,13 @@ export default function Welcome() {
 
   // Signup
   const onSubmitSignup = (data) => {
-    dispatch(signup(data));
-    dispatch(toggleAlert());
-    setFormStatus(true);
+    dispatch(signup(data)).then(() => {
+      dispatch(toggleAlert());
+      if (!loading && !error) {
+        setFormStatus(true);
+      }
+      reset();
+    });
   };
 
   const toggleForm = (status) => {
@@ -58,8 +62,8 @@ export default function Welcome() {
   };
 
   return (
-    <div className="flex flex-col w-screen max-h-screen">
-      {showAlert && (
+    <div className="flex flex-col max-w-screen max-h-screen">
+      {showAlert && !loading && !error && (
         <AlertComponent
           type="Success!"
           content="You have successfully registered. Please log in now."
@@ -68,7 +72,7 @@ export default function Welcome() {
           }}
         />
       )}
-      <div className="welcome flex dark:bg-dark-background ">
+      <div className="welcome flex dark:bg-dark-background">
         <div className="image w-[55%] relative hidden lg:block">
           <img
             className="w-full h-screen object-cover"
@@ -140,20 +144,25 @@ export default function Welcome() {
               <h2 className="text-light-primaryText text-5xl text-center font-bold mb-12 dark:text-dark-primaryText">
                 Join the Lynkus Community
               </h2>
+              {error && (
+                <p className="text-red-600 bg-red-200 rounded-md p-3 text-center">
+                  {error}
+                </p>
+              )}
               <input
-                {...register("userName", { required: "Full Name is Required" })}
+                {...register("userName", { required: "Username is Required" })}
                 className="block w-full mt-5 border-light-secondaryText focus:border-light-primaryText outline-none border-2 rounded-lg p-2"
                 type="text"
-                placeholder="Full Name"
+                placeholder="Username"
               />
               <p className="text-light-primaryText mt-2 pl-1 text-md font-bold dark:text-dark-primaryText">
                 {errors.userName?.message}
               </p>
               <input
-                {...register("name", { required: "Username is Required" })}
+                {...register("name", { required: "Full Name is Required" })}
                 className="block w-full mt-5 border-light-secondaryText focus:border-light-primaryText outline-none border-2 rounded-lg p-2"
                 type="text"
-                placeholder="Username"
+                placeholder="Full Name"
               />
               <p className="text-light-primaryText mt-2 pl-1 text-md font-bold dark:text-dark-primaryText">
                 {errors.name?.message}

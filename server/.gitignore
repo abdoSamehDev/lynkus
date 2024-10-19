@@ -1,0 +1,7 @@
+node_modules
+uploads/users/headerImg/*
+
+uploads/users/profileImg/*
+.env
+users/notes.js
+notifications/note.js

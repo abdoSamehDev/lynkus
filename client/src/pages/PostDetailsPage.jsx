@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Post from "../components/Post";
 import { useParams } from "react-router-dom";
 import { DefaultButton } from "../components/Buttons.jsx";
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import api, { setAuthToken } from "../utils/axios";
 import Cookies from "universal-cookie";
 import LoadingPage from "./LoadingPage.jsx";
@@ -81,7 +81,7 @@ function PostDetailsPage() {
         setEditingCommentId(commentId);
         setEditedCommentText(commentText);
     };
-
+  }, []);
     // Save the updated comment
     const handleSaveComment = async (commentId) => {
         try {
@@ -262,8 +262,44 @@ function PostDetailsPage() {
                     </div>
                 </form>
             </div>
+          </div>
+        ))}
+
+        <form
+          onSubmit={handleCommentSubmit}
+          className="add-comment-form mt-6 flex flex-col gap-4 mb-20"
+        >
+          <textarea
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            className="p-3 border border-gray-300 rounded-lg resize-none h-24 focus:outline-none focus:border-blue-500 transition-colors"
+            placeholder="Add a comment..."
+            required
+          ></textarea>
+          <div className="flex justify-end">
+            <DefaultButton type="submit" label="Post Comment" />
+          </div>
+        </form>
+      </div>
+
+      {/* Add Comment Form */}
+      <form
+        onSubmit={handleCommentSubmit}
+        className="add-comment-form mt-6 flex flex-col gap-4"
+      >
+        <textarea
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          className="p-3 border border-gray-300 rounded-lg resize-none h-24 focus:outline-none focus:border-blue-500 transition-colors"
+          placeholder="Add a comment..."
+          required
+        ></textarea>
+        <div className="flex justify-end">
+          <DefaultButton type="submit" label="Post Comment" />
         </div>
-    );
+      </form>
+    </div>
+  );
 }
 
 export default PostDetailsPage;

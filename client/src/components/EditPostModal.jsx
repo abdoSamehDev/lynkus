@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Modal, Label, Textarea } from "flowbite-react";
 import { DefaultButton, SecondaryButton } from "./Buttons";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import api, {setAuthToken} from "../utils/axios";
+import api, { setAuthToken } from "../utils/axios";
 import cookie from "universal-cookie";
 
 const UpdatePostModal = ({ openModal, setOpenModal, postId, mybody , myImage}) => {
@@ -30,13 +30,16 @@ const UpdatePostModal = ({ openModal, setOpenModal, postId, mybody , myImage}) =
         }
     };
 
-    const onSubmit = async (data) => {
-        try {
-            const formData = new FormData();
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+    }
+  };
 
-            // Append body and authorId to the formData
-            formData.append("body", data.body);
-
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
             // Append image if it exists
             if (imageFile) {
                 formData.append("image", imageFile);
@@ -49,43 +52,45 @@ const UpdatePostModal = ({ openModal, setOpenModal, postId, mybody , myImage}) =
                 },
             });
 
-            console.log("Post updated successfully:", response.data);
-
+      // Perform the PUT request to update the post using the custom api instance
+      setAuthToken(token);
+      const response = await api.put(`/posts/${postId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
             // Handle success (you can show a success message, close the modal, etc.)
             setOpenModal(false);
             window.location.reload();
 
-        } catch (error) {
-            console.error("Error updating the post:", error);
-            // Handle error (e.g., show an error message to the user)
-        }
-    };
+      // Handle success (you can show a success message, close the modal, etc.)
+      setOpenModal(false);
+    } catch (error) {
+      console.error("Error updating the post:", error);
+      // Handle error (e.g., show an error message to the user)
+    }
+  };
 
-    return (
-        <Modal
-            show={openModal}
-            onClose={() => setOpenModal(false)}
-            size="lg"
-        >
-            <Modal.Header>
-                <h3 className="text-xl font-medium">Update Post</h3>
-            </Modal.Header>
-            <Modal.Body className="p-6">
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    <div>
-                        <Label htmlFor="body" value="Post Body" />
-                        <Textarea
-                            id="body"
-                            rows={4}
-                            placeholder="Update your post"
-                            {...register("body", { required: "Post body is required" })}
-                            className="mt-2"
-                        />
-                        {errors.body && (
-                            <p className="mt-1 text-xs text-red-500">{errors.body.message}</p>
-                        )}
-                    </div>
-
+  return (
+    <Modal show={openModal} onClose={() => setOpenModal(false)} size="lg">
+      <Modal.Header>
+        <h3 className="text-xl font-medium">Update Post</h3>
+      </Modal.Header>
+      <Modal.Body className="p-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div>
+            <Label htmlFor="body" value="Post Body" />
+            <Textarea
+              id="body"
+              rows={4}
+              placeholder="Update your post"
+              {...register("body", { required: "Post body is required" })}
+              className="mt-2"
+            />
+            {errors.body && (
+              <p className="mt-1 text-xs text-red-500">{errors.body.message}</p>
+            )}
+          </div>
                     <div className="flex flex-col items-center">
                         {typeof imageFile === "string" ? (
                             <img

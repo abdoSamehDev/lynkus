@@ -69,8 +69,8 @@ export const tabTheme = {
       variant: {
         fullWidth: {
           active: {
-            on: "active bg-light-background text-xl font-bold p-4 text-light-secondaryText dark:bg-dark-background dark:text-dark-secondaryText ",
-            off: "bg-light-secondaryBackground text-light-primaryText hover:bg-light-accent dark:bg-dark-secondaryBackground dark:hover:bg-dark-accent dark:text-dark-primaryText",
+            on: "active bg-light-secondaryBackground text-xl font-bold p-4 text-light-secondaryText dark:bg-dark-secondaryBackground dark:text-dark-secondaryText ",
+            off: " bg-light-background text-light-primaryText hover:bg-light-accent dark:bg-dark-background dark:hover:bg-dark-accent dark:text-dark-primaryText",
           },
         },
       },

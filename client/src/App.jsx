@@ -12,8 +12,8 @@ import NotificationsPage from "./pages/NotificationsPage";
 import usePeriodicFetch from "./hooks/usePeriodicFetch";
 import { getAllNotifications } from "./store/notificationSlice";
 import PrivateRouter from "./components/PrivateRouter";
-import { fetchUserDataFromCookies } from "./store/userSlice";
-import LoadingPage from "./pages/LoadingPage";
+import { fetchUserDataFromCookies, recommendedUsers } from "./store/userSlice";
+import SearchPage from "./pages/SearchPage";
 import { isAuthorized } from "./utils/checkAuth";
 
 function App() {
@@ -27,6 +27,7 @@ function App() {
       console.log("WELCOEM WE ARE GETTING UR DATA...");
 
       dispatch(fetchUserDataFromCookies());
+      dispatch(recommendedUsers());
     }
     const storedTheme = localStorage.getItem("theme");
 
@@ -45,9 +46,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/login" element={<Welcome />} /> */}
         <Route element={<Layout />}>
-          <Route path="/post/:postId" element={<PostDetailsPage />} />
           <Route
             index
             element={
@@ -65,6 +64,14 @@ function App() {
             }
           />
           <Route
+            path="/search"
+            element={
+              <PrivateRouter>
+                <SearchPage />
+              </PrivateRouter>
+            }
+          />
+          <Route
             path="/notfication"
             element={
               <PrivateRouter>
@@ -72,10 +79,17 @@ function App() {
               </PrivateRouter>
             }
           />
+          <Route
+            path="/post/:postId"
+            element={
+              <PrivateRouter>
+                <PostDetailsPage />
+              </PrivateRouter>
+            }
+          />
         </Route>
         <Route path="/welcome" element={<Welcome />} />
-        <Route path="/loading" element={<LoadingPage />} />
-        <Route path="/error" element={<Error />} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </BrowserRouter>
   );

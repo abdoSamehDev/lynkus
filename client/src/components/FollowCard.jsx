@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 import { LinkSlashIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { toggleFollow } from "../store/userSlice";
+import { recommendedUsers, toggleFollow } from "../store/userSlice";
+import LoadingSpinner from "./LoadingSpinner";
 
 function FollowCard({ userId, name, username, profileImg, followed }) {
   const dispatch = useDispatch();
@@ -19,21 +20,27 @@ function FollowCard({ userId, name, username, profileImg, followed }) {
   const toggleFollowing = () => {
     setFollowing(!following);
   };
+  const [followLoading, setFollowLoading] = useState(false);
 
   return (
     <div className="w-full flex justify-between items-center">
       <Link to={`/user/${username}`}>
         <Head username={username} name={name} profileImg={profileImg} />
       </Link>
-
-      <DefaultButton
-        Icon={following ? LinkSlashIcon : LinkIcon}
-        label={following ? "Unlink" : "Link"}
-        onClick={() => {
-          dispatch(toggleFollow(userId));
-          toggleFollowing();
-        }}
-      />
+      {followLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <DefaultButton
+          Icon={following ? LinkSlashIcon : LinkIcon}
+          label={following ? "Unlink" : "Link"}
+          onClick={async () => {
+            await dispatch(toggleFollow(userId));
+            toggleFollowing();
+            setFollowLoading(false);
+            await dispatch(recommendedUsers());
+          }}
+        />
+      )}
     </div>
   );
 }
