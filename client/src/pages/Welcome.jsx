@@ -49,8 +49,8 @@ export default function Welcome() {
   const onSubmitSignup = (data) => {
     dispatch(signup(data)).then(() => {
       dispatch(toggleAlert());
-      if (!loading && !error) {
-        setFormStatus(true);
+      if (loading || error) {
+        setFormStatus(false);
       }
       reset();
     });
