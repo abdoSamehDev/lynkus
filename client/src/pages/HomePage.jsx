@@ -6,6 +6,9 @@ import { fetchUserDataFromCookies, recommendedUsers } from "../store/userSlice";
 import { fetchPosts } from "../store/postSlice";
 import LoadingPage from "./LoadingPage";
 import { formatImageUrl } from "../utils/helpers";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
 
 function HomePage() {
   const dispatch = useDispatch();
@@ -13,6 +16,7 @@ function HomePage() {
   const { authUserData } = useSelector((state) => state.user);
   // Loading state to manage when data is being fetched
   const [loading, setLoading] = useState(true);
+  const cookieUser = cookies.get("user");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +65,7 @@ function HomePage() {
                 index={i}
                 userId={authUserData?._id}
                 authorId={x.authorId?._id}
-                currentUserId={authUserData?.data.id}
+                currentUserId={cookieUser.id}
               />
             </li>
           );
