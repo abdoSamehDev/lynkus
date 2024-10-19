@@ -64,8 +64,7 @@ function CreatePost({ profileImg }) {
       setImage(null);
       dispatch(fetchPosts());
     } catch (error) {
-      toast.error("Failed to create post!");
-      console.log(error);
+      toast.error(`Failed to create post! ${error}`);
     } finally {
       setPostCreation(false);
     }

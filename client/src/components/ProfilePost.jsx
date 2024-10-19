@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom"; // Import useLocation
 import Head from "./Head";
-import { likeNumberChange, likePostToggle } from "../store/postSlice";
 import { HeartIcon, ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
 import { fetchUserData, toggleLikeUserPost } from "../store/userSlice";
@@ -33,19 +32,6 @@ function ProfilePost({
     await dispatch(toggleLikeUserPost(postId)).unwrap();
     await dispatch(fetchUserData(userId)).unwrap();
     setIsLiked(!likedByUser);
-    //     fetchUserData(userData?.data?.id || userData?.id)
-    //   ).unwrap();
-    //   await dispatch(toggleFollow(userData?.data?.id || userData?.id)).unwrap();
-    //   // After editUserProfile is fulfilled, dispatch getUserData
-    //   // dispatch(clearUserData());
-    //   await dispatch(
-    //     fetchUserData(userData?.data?.id || userData?.id)
-    //   ).unwrap();
-
-    //   await dispatch(
-    //     getUserData(userData?.data?.userName || userData?.userName)
-    //   ).unwrap();
-    //   setIsFollowed(!userData?.isFollowing);
   };
 
   return (

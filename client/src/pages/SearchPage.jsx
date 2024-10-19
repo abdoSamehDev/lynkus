@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import SearchNavTabs from "../components/SearchNavTabs"; // Import the SearchNavTabs component
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"; // Import the search icon
-import { fetchSearchResults, setSearchQuery } from "../store/searchSlice"; // Import the actions for fetching search results and setting the query
-import { useDispatch, useSelector } from "react-redux"; // Import hooks for dispatching actions and selecting state
+import { useEffect } from "react";
+import SearchNavTabs from "../components/SearchNavTabs";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { fetchSearchResults, setSearchQuery } from "../store/searchSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
 const SearchPage = () => {
@@ -13,8 +13,8 @@ const SearchPage = () => {
   // Handle search input change
   const handleSearch = (e) => {
     const newQuery = e.target.value;
-    dispatch(setSearchQuery(newQuery)); // Dispatch action to update the query in the store
-    dispatch(fetchSearchResults({ query: newQuery })); // Fetch search results based on the new query and active tab
+    dispatch(setSearchQuery(newQuery));
+    dispatch(fetchSearchResults({ query: newQuery }));
 
     const url = new URL(window.location);
     url.searchParams.set("", newQuery);

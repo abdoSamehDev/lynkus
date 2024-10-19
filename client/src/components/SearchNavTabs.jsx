@@ -1,10 +1,7 @@
-import React, { useEffect } from "react";
-import { Tabs } from "flowbite-react"; // Import Tabs component from Flowbite for UI navigation// Import action to set the active tab
-import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks to dispatch actions and select state
-import FilteredUsers from "../components/FilteredUsers"; // Import the component to display filtered users
-import FilteredPosts from "./FilteredPosts"; // Import the component to display filtered posts
+import { Tabs } from "flowbite-react";
+import FilteredUsers from "../components/FilteredUsers";
+import FilteredPosts from "./FilteredPosts";
 
-// Custom theme for the Tabs component, defining styling for various states (active/inactive)
 const customTheme = {
   base: "flex flex-col",
   tablist: {
@@ -28,9 +25,6 @@ const customTheme = {
 };
 
 export default function SearchNavTabs() {
-  const dispatch = useDispatch(); // Initialize dispatch to trigger actions
-  const activeTab = useSelector((state) => state.search.activeTab); // Select the current active tab from the Redux store
-
   return (
     <div className="min-h-full mt-[20px] bg-light-background dark:bg-dark-background rounded-[10px]">
       {/* Tabs component with custom theme */}
@@ -43,7 +37,6 @@ export default function SearchNavTabs() {
         <Tabs.Item active title="Posts">
           <FilteredPosts />{" "}
         </Tabs.Item>
-
         <Tabs.Item title="Users">
           <FilteredUsers />{" "}
         </Tabs.Item>

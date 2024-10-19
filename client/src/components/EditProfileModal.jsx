@@ -17,7 +17,6 @@ import {
   textInputTheme,
 } from "../utils/flowbiteThemes";
 import { toggleAlert } from "../store/appSlice";
-import { useNavigate } from "react-router-dom";
 
 const EditProfileModal = ({ openModal, setOpenModal }) => {
   const [imageFiles, setImageFiles] = useState({
@@ -26,8 +25,6 @@ const EditProfileModal = ({ openModal, setOpenModal }) => {
   });
   const dispatch = useDispatch();
   const { authUserData, loading, err } = useSelector((state) => state.user);
-  console.log(authUserData.data);
-  const nav = useNavigate();
 
   const {
     register,
@@ -66,17 +63,11 @@ const EditProfileModal = ({ openModal, setOpenModal }) => {
     });
 
     const objData = {};
-    // console.log("FormData to be sent to API:");
     for (let [key, value] of formData.entries()) {
-      // console.log(key, value);
       objData[key] = value;
     }
-    console.log("FormData to be sent to API:");
-    console.log(objData);
 
     await dispatch(editUserProfile(objData)).unwrap();
-    // Dispatch editUserProfile and wait for it to complete
-    // await dispatch(editUserProfile(formData)).unwrap();
 
     // After editUserProfile is fulfilled, dispatch getUserData
     await dispatch(fetchUserData(authUserData.data?.id)).unwrap();
@@ -174,9 +165,6 @@ const EditProfileModal = ({ openModal, setOpenModal }) => {
           {renderImageUpload("headerImg", "Header Image")}
           {renderImageUpload("profileImg", "Profile Picture")}
           {renderTextInput("name", "Name", { required: "Name is required" })}
-          {/* {renderTextInput("userName", "Username", {
-            required: "Username is required",
-          })} */}
           <div>
             <Label
               htmlFor="bio"
