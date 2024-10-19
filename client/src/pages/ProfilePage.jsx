@@ -11,10 +11,6 @@ import {
   clearUserData,
   fetchUserData,
   getUserData,
-  // getUserFollowers,
-  // getUserFollowings,
-  // getUserLikedPosts,
-  // getUserPosts,
 } from "../store/userSlice";
 import LoadingPage from "./LoadingPage";
 import AlertComponent from "../components/AlertComponent";
@@ -22,8 +18,6 @@ import { toggleAlert } from "../store/appSlice";
 function ProfilePage() {
   const dispatch = useDispatch();
   const { username } = useParams();
-  console.log(username);
-
   const {
     userData,
     authUserData,
@@ -42,25 +36,17 @@ function ProfilePage() {
 
   useEffect(() => {
     dispatch(checkOwnProfile(username));
-
-    console.log("IS IOWNER: " + isOwnProfile);
   }, [isOwnProfile, username]);
-  // const isOwnProfile = username ===
-
   useEffect(() => {
     const fetchProfileData = async () => {
       dispatch(clearUserData());
-      console.log("CLEARED USER DATA");
       if (username) {
         const resultAction = await dispatch(getUserData(username));
         if (getUserData.fulfilled.match(resultAction)) {
-          console.log("GET USER DATA, ", username);
-
           const userId = isOwnProfile
             ? resultAction.payload?.id || resultAction.payload.data?.id
             : resultAction.payload.data?.id;
           if (userId) {
-            console.log("GET USER ID, ", userId);
             dispatch(fetchUserData(userId));
           }
         }
@@ -68,48 +54,6 @@ function ProfilePage() {
     };
     fetchProfileData();
   }, [dispatch, username]);
-
-  // useEffect(() => {
-  //   dispatch(getUserData(username)).then(() => {
-  //     if (isOwnProfile) {
-  //       console.log("AUTH USER PROFILE");
-  //       // console.log("USER NAME: " + authUserId);
-  //       // console.log("USER NAME: " + authUserData.userName);
-  //       // console.log("USER DATA: " + authUserData);
-
-  //       dispatch(
-  //         getUserFollowers(
-  //           authUserData?.data?.id ? authUserData?.data?.id : authUserData?.id
-  //         )
-  //       );
-  //       dispatch(
-  //         getUserFollowings(
-  //           authUserData?.data?.id ? authUserData.data?.id : authUserData?.id
-  //         )
-  //       );
-  //       dispatch(
-  //         getUserPosts(
-  //           authUserData?.data?.id ? authUserData?.data?.id : authUserData?.id
-  //         )
-  //       );
-  //       dispatch(
-  //         getUserLikedPosts(
-  //           authUserData?.data?.id ? authUserData.data?.id : authUserData?.id
-  //         )
-  //       );
-  //     } else {
-  //       console.log("NOT AUTH USER PROFILE");
-  //       console.log("USER ID: " + userData.data?.id);
-  //       // console.log("USER NAME: " + userData.userName);
-  //       // console.log("USER DATA: " + userData);
-  //       dispatch(getUserFollowers(userData.data?.id));
-  //       dispatch(getUserFollowings(userData.data?.id));
-  //       dispatch(getUserPosts(userData.data?.id));
-  //       dispatch(getUserLikedPosts(userData.data?.id));
-  //     }
-  //   });
-  // }, [isOwnProfile, username]);
-
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => {
@@ -170,7 +114,6 @@ function ProfilePage() {
         followLoading={followLoading}
       />
       {/* NAV TABS */}
-      {/* TODO: MAKE IT DYNAMIC */}
       <ProfileNavTabs
         userId={profileData?.id}
         loading={loading}

@@ -2,7 +2,7 @@
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
 import { Modal } from "flowbite-react";
 import { ErrorButton, SecondaryButton } from "./Buttons";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { deleteUserProfile } from "../store/userSlice";
 import { modalTheme } from "../utils/flowbiteThemes";
 import { logout } from "../store/authSlice";
@@ -11,23 +11,6 @@ import { useNavigate } from "react-router-dom";
 function DeleteProfileModal({ openModal, setOpenModal }) {
   const dispatch = useDispatch();
   const nav = useNavigate();
-  const { loading, err } = useSelector((state) => state.user);
-
-  // if (loading) {
-  //   return (
-  //     <div className="w-full h-full flex items-center justify-center md:col-span-7 lg:col-span-4 overflow-y-auto hide-scrollbar text-light-primaryText dark:text-dark-primaryText opacity-80">
-  //       Loading...
-  //     </div>
-  //   );
-  // }
-
-  // if (err) {
-  //   return (
-  //     <div className="w-full h-full flex items-center justify-center md:col-span-7 lg:col-span-4 overflow-y-auto hide-scrollbar text-light-primaryText dark:text-dark-primaryText opacity-80">
-  //       Error: {err}
-  //     </div>
-  //   );
-  // }
   return (
     <Modal
       theme={modalTheme}

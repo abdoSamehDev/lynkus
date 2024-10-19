@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Tabs } from "flowbite-react";
 import FollowersTab from "./FollowersTab";
 import FollowingsTab from "./FollowingsTab";

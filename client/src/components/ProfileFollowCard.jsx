@@ -38,19 +38,10 @@ function ProfileFollowCard({
         <DefaultButton
           Icon={userData?.isFollowing || isFollowed ? LinkSlashIcon : LinkIcon}
           label={userData?.isFollowing || isFollowed ? "Unlink" : "Link"}
-          //   onClick={async () => {
-          //     await dispatch(toggleFollow(userId));
-          //     toggleFollowing();
-          //     setFollowLoading(false);
-          //     await dispatch(recommendedUsers());
-          //   }}
           onClick={async () => {
             setFollowLoading(true);
             await dispatch(toggleFollow(userId));
-            // After editUserProfile is fulfilled, dispatch getUserData
-            // dispatch(clearUserData());
             await dispatch(fetchUserData(userData?.data?.id || userData?.id));
-
             await dispatch(
               getUserData(userData?.data?.userName || userData?.userName)
             );

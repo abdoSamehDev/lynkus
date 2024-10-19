@@ -30,7 +30,6 @@ function NotificationsPage() {
           label="Clear All"
           Icon={XMarkIcon}
           onClick={async () => {
-            console.log("CLEARED ALL NOTIFICATIONS");
             await dispatch(clearAllNotifications());
             await dispatch(getAllNotifications());
           }}

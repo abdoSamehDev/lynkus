@@ -7,7 +7,6 @@ import {
   MagnifyingGlassIcon,
   BellIcon,
   UserIcon,
-  // EnvelopeIcon,
   SunIcon,
   MoonIcon,
   ArrowLeftStartOnRectangleIcon,
@@ -17,7 +16,6 @@ import {
   MagnifyingGlassIcon as MagnifyingGlassSolid,
   BellIcon as BellSolid,
   UserIcon as UserSolid,
-  // EnvelopeIcon as EnvelopeSolid,
 } from "@heroicons/react/24/solid";
 import { DefaultButton, ErrorButton } from "../components/Buttons";
 import { toggleTheme } from "../store/themeSlice";
@@ -28,7 +26,6 @@ function Navbar() {
   const location = useLocation();
   const { pathname } = location;
   const theme = useSelector((state) => state.theme.theme);
-  // const hasNewNotifications = true;
   const hasNewNotifications = useSelector(
     (state) => state.notification.hasNewNotifications
   );
@@ -156,23 +153,6 @@ function Navbar() {
                 </p>
               </Link>
             </li>
-            {/* CHAT BONUS */}
-            {/* <li className="w-full lg:flex items-center">
-              <Link to={"/"} className="flex justify-center items-center gap-2">
-                {pathname == "" ? (
-                  <EnvelopeSolid className="size-7 text-button-default hover:text-button-hover" />
-                ) : (
-                  <EnvelopeIcon className="size-6 text-button-default hover:text-button-hover" />
-                )}
-                <p
-                  className={`hidden lg:block ${
-                    pathname == "" ? "text-3xl" : "text-2xl"
-                  } font-bold text-light-primaryText hover:text-button-hover dark:text-dark-primaryText dark:hover:text-button-hover`}
-                >
-                  Chat
-                </p>
-              </Link>
-            </li> */}
           </ul>
           <div className="hidden mb-4 lg:flex flex-col gap-4 order-2 w-3/4">
             {/* <DefaultButton label={"Dark Mode"} /> */}

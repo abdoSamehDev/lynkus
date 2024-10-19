@@ -10,7 +10,7 @@ import { Avatar } from "flowbite-react";
 import { capitalizeName, formatImageUrl } from "../utils/helpers";
 import { useDispatch } from "react-redux";
 import { fetchUserData, getUserData, toggleFollow } from "../store/userSlice";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 
 function ProfileHeading({
@@ -19,7 +19,6 @@ function ProfileHeading({
   initiateEditModal,
   userData,
   loading,
-  // followLoading,
 }) {
   const dispatch = useDispatch();
   const headerImg = formatImageUrl(
@@ -30,21 +29,8 @@ function ProfileHeading({
     userData?.data?.profileImg || userData?.profileImg,
     "profileImg"
   );
-  // const following = userData?.data?.isFollowing || userData?.isFollowing;
   const [isFollowed, setIsFollowed] = useState(userData?.isFollowing);
   const [followLoading, setFollowLoading] = useState(false);
-
-  useEffect(() => {
-    console.log("USER HEADING DATA: ");
-    console.log(userData);
-    // console.log(userData.data.profileImg);
-    console.log("USER PROFILE IMAGE: ");
-    console.log(profileImg);
-    console.log("USER HEADER IMAGE: ");
-    console.log(headerImg);
-    console.log("IS FOLLOWING: ");
-    console.log(isFollowed);
-  }, []);
 
   return (
     <div className="w-full min-h-[300px] md:min-h-[450px] pb-[30px] bg-light-secondaryBackground dark:bg-dark-secondaryBackground">
@@ -119,8 +105,6 @@ function ProfileHeading({
                 <LoadingSpinner />
               ) : (
                 <DefaultButton
-                  // Icon={isFollowed ? LinkSlashIcon : LinkIcon}
-                  // label={isFollowed ? "Unlink" : "Link"}
                   Icon={
                     userData?.isFollowing || isFollowed
                       ? LinkSlashIcon
@@ -134,8 +118,6 @@ function ProfileHeading({
                     await dispatch(
                       toggleFollow(userData?.data?.id || userData?.id)
                     ).unwrap();
-                    // After editUserProfile is fulfilled, dispatch getUserData
-                    // dispatch(clearUserData());
                     await dispatch(
                       fetchUserData(userData?.data?.id || userData?.id)
                     ).unwrap();
@@ -150,8 +132,6 @@ function ProfileHeading({
                   }}
                 />
               )}
-
-              {/* <SecondaryButton label={"Message"} /> */}
             </div>
           )}
         </div>

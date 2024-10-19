@@ -1,14 +1,9 @@
 import { useSelector } from "react-redux";
 import { capitalizeName } from "../utils/helpers";
-import { useEffect } from "react";
 import ProfilePost from "./ProfilePost";
 
 function UserLikesTab() {
   const { userLikedPosts } = useSelector((state) => state.user);
-  useEffect(() => {
-    console.log("USER LIKED POSTS TAB: ");
-    console.log(userLikedPosts[0]);
-  }, []);
   const reversedPosts = userLikedPosts ? [...userLikedPosts].reverse() : [];
   return (
     <>

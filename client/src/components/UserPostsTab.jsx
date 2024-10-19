@@ -1,6 +1,4 @@
 import { useSelector } from "react-redux";
-import Post from "./Post";
-import { useEffect } from "react";
 import { capitalizeName } from "../utils/helpers";
 import ProfilePost from "./ProfilePost";
 
@@ -8,10 +6,6 @@ function UserPostsTab() {
   const { userPosts } = useSelector((state) => state.user);
   const reversedPosts = userPosts ? [...userPosts].reverse() : [];
 
-  useEffect(() => {
-    console.log("USER POSTS TAB: ");
-    console.log(userPosts[0]);
-  }, []);
   return (
     <>
       {userPosts?.length == 0 || userPosts.posts?.length == 0 ? (

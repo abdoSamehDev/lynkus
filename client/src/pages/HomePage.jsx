@@ -11,7 +11,6 @@ function HomePage() {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.post.posts);
   const { authUserData } = useSelector((state) => state.user);
-  console.log("posts", posts);
   // Loading state to manage when data is being fetched
   const [loading, setLoading] = useState(true);
 

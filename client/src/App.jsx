@@ -14,8 +14,6 @@ import { getAllNotifications } from "./store/notificationSlice";
 import PrivateRouter from "./components/PrivateRouter";
 import { fetchUserDataFromCookies, recommendedUsers } from "./store/userSlice";
 import SearchPage from "./pages/SearchPage";
-
-import LoadingPage from "./pages/LoadingPage";
 import { isAuthorized } from "./utils/checkAuth";
 
 function App() {
@@ -49,7 +47,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/post/:postId" element={<PostDetailsPage />} />
           <Route
             index
             element={
@@ -82,10 +79,17 @@ function App() {
               </PrivateRouter>
             }
           />
+          <Route
+            path="/post/:postId"
+            element={
+              <PrivateRouter>
+                <PostDetailsPage />
+              </PrivateRouter>
+            }
+          />
         </Route>
         <Route path="/welcome" element={<Welcome />} />
-        <Route path="/loading" element={<LoadingPage />} />
-        <Route path="/error" element={<Error />} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </BrowserRouter>
   );
