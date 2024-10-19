@@ -165,8 +165,6 @@ function PostDetailsPage() {
                 </h2>
 
                 {/* Display the comments */}
-                {comments.map((comment, index) => (
-                    console.log("comment", comment),
                     <div
                         key={comment.id || `comment-${index}`}
                         className="comment mb-4 p-4 border border-gray-200 rounded-lg shadow-sm bg-light-primaryBackground dark:bg-dark-primaryBackground flex items-start relative"
