@@ -53,7 +53,7 @@ Lynkus is a social media platform developed as the graduation project for the Di
 
 ## Live Demo
 
-Experience Lynkus in action! Visit our live demo at [https://www.lynkus.com](https://vercel.com/abdosamehdevs-projects/lynkus-client/HPgB8fQuRrj9xgcdR3noH7GjnHzu).
+Experience Lynkus in action! Visit our live demo at [https://www.lynkus.com](https://lynkus-client.vercel.app/).
 
 ## API Documentation
 
