@@ -14,57 +14,70 @@ import {
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/solid";
 import UpdatePostModal from "./EditPostModal";
+import api, { setAuthToken } from "../utils/axios";
+import cookie from "universal-cookie";
 
 function Post({
-  name,
-  username,
-  profileImg,
-  postId,
-  body,
-  postImg,
-  likes,
-  comments,
-  likedByUser,
-  userId,
-  currentUserId,
-}) {
-  const dispatch = useDispatch();
-  const posts = useSelector((state) => state.post.posts);
-  const [showPost] = useState(true);
-  const [openModal, setOpenModal] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
+                  name,
+                  username,
+                  profileImg,
+                  postId,
+                  body,
+                  postImg,
+                  likes,
+                  comments,
+                  likedByUser,
+                  userId,
+                  currentUserId,
+              }) {
+    const dispatch = useDispatch();
+    const posts = useSelector((state) => state.post.posts);
+    const [showPost] = useState(true);
+    const [openModal, setOpenModal] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
 
-  const location = useLocation(); // Get the current location
+    const location = useLocation(); // Get the current location
+    const cookies = new cookie();
+    const token = cookies.get("token");
+    const handleLike = () => {
+        const post = posts.find((post) => post._id === postId);
+        dispatch(likePostToggle({ postId })).then(() => {
+            dispatch(likeNumberChange(posts.indexOf(post)));
+        });
+    };
 
-  const handleLike = () => {
-    const post = posts.find((post) => post._id === postId);
-    dispatch(likePostToggle({ postId })).then(() => {
-      dispatch(likeNumberChange(posts.indexOf(post)));
-    });
-  };
+    const handleDelete = () => {
+        if (userId === currentUserId) {
+            // Delete post
+            const deletePost = async () => {
+                try {
+                    setAuthToken(token);
+                    console.log("Deleting post with ID:", postId);
+                    const response = await api.delete(`/posts/${postId}`);
+                    location.pathname === `/post/${postId}` && window.history.back();
+                    console.log("Post deleted successfully:", response.data);
+                } catch (error) {
+                    console.error("Error deleting the post:", error);
+                }
+            };
+            deletePost();
+        }
+    };
 
-  const handleDelete = () => {
-    if (userId === currentUserId) {
-      // Handle delete post logic here
-      console.log("Post deleted successfully");
-    }
-  };
-
-  return (
-    <div className={`w-full ${showPost ? "block" : "hidden"} mb-20`}>
-      {/* Conditionally render the Back Arrow if not on the homepage */}
-      {location.pathname !== "/" && ( // Check if not on the home page
-        <div className="flex items-center mb-4">
-          <Link
-            to="/" // Link to the home page
-            className="text-button-default hover:text-button-hover flex items-center"
-          >
-            <ArrowLeftIcon className="size-6" /> {/* Back arrow icon */}
-            <span className="ml-2">Back to Home</span>
-          </Link>
-        </div>
-      )}
-
+    return (
+        <div className={`w-full ${showPost ? "block" : "hidden"} `}>
+            {/* Conditionally render the Back Arrow if not on the homepage */}
+            {location.pathname !== "/" && (
+                <div className="flex items-center mb-4">
+                    <Link
+                        to="/" // Link to the home page
+                        className="text-button-default hover:text-button-hover flex items-center"
+                    >
+                        <ArrowLeftIcon className="size-6" /> {/* Back arrow icon */}
+                        <span className="ml-2">Back to Home</span>
+                    </Link>
+                </div>
+            )}
       <Link
         to={`/post/${postId}`}
         className="w-full flex justify-between items-start"
@@ -123,15 +136,14 @@ function Post({
           />
         </div>
       )}
+            {/* Edit Post Modal */}
+            <UpdatePostModal
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                postId={postId}
+                mybody={body}
+                myImage={postImg}
 
-      <div className="w-full py-4 flex items-center justify-start gap-10">
-        <div className="flex items-center justify-between gap-2">
-          <button
-            className="text-button-default  hover:text-button-hover"
-            onClick={handleLike}
-          >
-            <HeartIcon
-              className={`size-6 ${likedByUser ? "hidden" : "block"}`}
             />
             <HeartSolid
               className={`size-6 ${likedByUser ? "block" : "hidden"}`}
