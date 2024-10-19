@@ -4,7 +4,6 @@ import ProfilePost from "./ProfilePost";
 
 function UserPostsTab() {
   const { userPosts } = useSelector((state) => state.user);
-  const reversedPosts = userPosts ? [...userPosts].reverse() : [];
 
   return (
     <>
@@ -14,7 +13,7 @@ function UserPostsTab() {
         </div>
       ) : (
         <ul className="w-full divide-y divide-light-secondaryText dark:divide-dark-secondaryText border-light-secondaryText dark:border-dark-secondaryText">
-          {reversedPosts.map((x, i) => {
+          {userPosts.map((x, i) => {
             return (
               <li key={i} className={`pt-6 px-6 `}>
                 <ProfilePost

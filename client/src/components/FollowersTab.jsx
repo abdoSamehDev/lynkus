@@ -4,7 +4,6 @@ import ProfileFollowCard from "./ProfileFollowCard";
 
 function FollowersTab() {
   const { userFollowers, authUserData } = useSelector((state) => state.user);
-  const reversedPosts = userFollowers ? [...userFollowers].reverse() : [];
   return (
     <>
       {userFollowers.length == 0 ? (
@@ -13,7 +12,7 @@ function FollowersTab() {
         </div>
       ) : (
         <ul className="w-full divide-y divide-light-secondaryText dark:divide-dark-secondaryText border-light-secondaryText dark:border-dark-secondaryText">
-          {reversedPosts.map((x, i) => {
+          {userFollowers.map((x, i) => {
             return (
               <li key={i} className={`p-6 `}>
                 <ProfileFollowCard
