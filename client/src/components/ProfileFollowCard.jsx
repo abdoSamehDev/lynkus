@@ -38,25 +38,21 @@ function ProfileFollowCard({
       {followLoading ? (
         <LoadingSpinner />
       ) : (
-        cookieData.data.id !== userId && (
-          <DefaultButton
-            Icon={
-              userData?.isFollowing || isFollowed ? LinkSlashIcon : LinkIcon
-            }
-            label={userData?.isFollowing || isFollowed ? "Unlink" : "Link"}
-            onClick={async () => {
-              setFollowLoading(true);
-              await dispatch(toggleFollow(userId));
-              await dispatch(fetchUserData(userData?.data?.id || userData?.id));
-              await dispatch(
-                getUserData(userData?.data?.userName || userData?.userName)
-              );
-              await dispatch(recommendedUsers());
-              setIsFollowed(!userData?.isFollowing);
-              setFollowLoading(false);
-            }}
-          />
-        )
+        <DefaultButton
+          Icon={userData?.isFollowing || isFollowed ? LinkSlashIcon : LinkIcon}
+          label={userData?.isFollowing || isFollowed ? "Unlink" : "Link"}
+          onClick={async () => {
+            setFollowLoading(true);
+            await dispatch(toggleFollow(userId));
+            await dispatch(fetchUserData(userData?.data?.id || userData?.id));
+            await dispatch(
+              getUserData(userData?.data?.userName || userData?.userName)
+            );
+            await dispatch(recommendedUsers());
+            setIsFollowed(!userData?.isFollowing);
+            setFollowLoading(false);
+          }}
+        />
       )}
     </div>
   );
