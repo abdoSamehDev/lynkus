@@ -1,24 +1,30 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useForm } from "react-hook-form";
 import { Modal, Label, Textarea } from "flowbite-react";
 import { DefaultButton, SecondaryButton } from "./Buttons";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import api, {setAuthToken} from "../utils/axios";
 import cookie from "universal-cookie";
-const UpdatePostModal = ({ openModal, setOpenModal, postId}) => {
+
+const UpdatePostModal = ({ openModal, setOpenModal, postId, mybody , myImage}) => {
     const [imageFile, setImageFile] = useState(null);
     const cookies = new cookie();
     const token = cookies.get("token");
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
-            body: "", // Initial body text (could be pre-filled if needed)
+            body: mybody,
+
         },
     });
-
+    useEffect(() => {
+        if (openModal) {
+            setImageFile(myImage);
+        }
+    }, [openModal, myImage]);
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files[0]; // Get the first file from the input
         if (file) {
             setImageFile(file);
         }
@@ -35,7 +41,6 @@ const UpdatePostModal = ({ openModal, setOpenModal, postId}) => {
             if (imageFile) {
                 formData.append("image", imageFile);
             }
-
             // Perform the PUT request to update the post using the custom api instance
             setAuthToken(token)
             const response = await api.put(`/posts/${postId}`, formData, {
@@ -48,6 +53,7 @@ const UpdatePostModal = ({ openModal, setOpenModal, postId}) => {
 
             // Handle success (you can show a success message, close the modal, etc.)
             setOpenModal(false);
+            window.location.reload();
 
         } catch (error) {
             console.error("Error updating the post:", error);
@@ -81,7 +87,13 @@ const UpdatePostModal = ({ openModal, setOpenModal, postId}) => {
                     </div>
 
                     <div className="flex flex-col items-center">
-                        {imageFile && (
+                        {typeof imageFile === "string" ? (
+                            <img
+                                src={imageFile}
+                                alt="Selected preview"
+                                className="w-full h-48 object-cover mb-4"
+                            />
+                        ) : imageFile && (
                             <img
                                 src={URL.createObjectURL(imageFile)}
                                 alt="Selected preview"

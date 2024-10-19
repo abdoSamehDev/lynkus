@@ -15,13 +15,12 @@ function HomePage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Fetch user data, posts, and recommended users, and handle loading state
         const fetchData = async () => {
-            setLoading(true); // Set loading to true while fetching data
+            setLoading(true);
             await dispatch(fetchUserDataFromCookies());
             await dispatch(fetchPosts());
             await dispatch(recommendedUsers());
-            setLoading(false); // Set loading to false after data is fetched
+            setLoading(false);
         };
 
         fetchData();
@@ -33,7 +32,7 @@ function HomePage() {
     }
 
     return (
-        <div className="w-full max-h-screen bg-light-background dark:bg-dark-background md:col-span-7 lg:col-span-4 overflow-y-auto hide-scrollbar">
+        <div className="w-full max-h-screen bg-light-background dark:bg-dark-background md:col-span-7 lg:col-span-4 overflow-y-auto hide-scrollbar mb-16 md:mb-0">
             <CreatePost profileImg={user.profileImg} />
             <ul className="w-full divide-y divide-light-secondaryText dark:divide-dark-secondaryText border-t border-light-secondaryText dark:border-dark-secondaryText">
                 {posts.map((x, i) => {

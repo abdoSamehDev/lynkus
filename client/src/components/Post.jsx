@@ -10,6 +10,8 @@ import {
     EllipsisVerticalIcon,
 } from "@heroicons/react/24/solid";
 import UpdatePostModal from "./EditPostModal";
+import api, { setAuthToken } from "../utils/axios";
+import cookie from "universal-cookie";
 
 function Post({
                   name,
@@ -31,7 +33,8 @@ function Post({
     const [showMenu, setShowMenu] = useState(false);
 
     const location = useLocation(); // Get the current location
-
+    const cookies = new cookie();
+    const token = cookies.get("token");
     const handleLike = () => {
         const post = posts.find((post) => post._id === postId);
         dispatch(likePostToggle({ postId })).then(() => {
@@ -41,15 +44,26 @@ function Post({
 
     const handleDelete = () => {
         if (userId === currentUserId) {
-            // Handle delete post logic here
-            console.log("Post deleted successfully");
+            // Delete post
+            const deletePost = async () => {
+                try {
+                    setAuthToken(token);
+                    console.log("Deleting post with ID:", postId);
+                    const response = await api.delete(`/posts/${postId}`);
+                    location.pathname === `/post/${postId}` && window.history.back();
+                    console.log("Post deleted successfully:", response.data);
+                } catch (error) {
+                    console.error("Error deleting the post:", error);
+                }
+            };
+            deletePost();
         }
     };
 
     return (
-        <div className={`w-full ${showPost ? "block" : "hidden"} mb-20`}>
+        <div className={`w-full ${showPost ? "block" : "hidden"} `}>
             {/* Conditionally render the Back Arrow if not on the homepage */}
-            {location.pathname !== "/" && ( // Check if not on the home page
+            {location.pathname !== "/" && (
                 <div className="flex items-center mb-4">
                     <Link
                         to="/" // Link to the home page
@@ -147,6 +161,8 @@ function Post({
                 openModal={openModal}
                 setOpenModal={setOpenModal}
                 postId={postId}
+                mybody={body}
+                myImage={postImg}
             />
         </div>
     );
