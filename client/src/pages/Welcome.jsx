@@ -127,6 +127,7 @@ export default function Welcome() {
               </p>
               <div className="flex flex-col gap-5 mt-5">
                 <DefaultButton
+                  type="submit"
                   label={loading ? <LoadingSpinner /> : "Log in"}
                   onClick={handleSubmit(onSubmitLogin)}
                 />
@@ -206,6 +207,7 @@ export default function Welcome() {
               </p>
               <div className="flex flex-col gap-5 mt-5">
                 <DefaultButton
+                  type="submit"
                   label={loading ? <LoadingSpinner /> : "Register"}
                   onClick={handleSubmit(onSubmitSignup)}
                 />

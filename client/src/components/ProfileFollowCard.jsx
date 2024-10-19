@@ -13,6 +13,9 @@ import {
   toggleFollow,
 } from "../store/userSlice";
 import LoadingSpinner from "./LoadingSpinner";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
 
 function ProfileFollowCard({
   userId,
@@ -23,7 +26,7 @@ function ProfileFollowCard({
   followed,
 }) {
   const dispatch = useDispatch();
-
+  const cookieData = cookies.get("user");
   const [isFollowed, setIsFollowed] = useState(followed);
   const [followLoading, setFollowLoading] = useState(false);
 
@@ -35,21 +38,25 @@ function ProfileFollowCard({
       {followLoading ? (
         <LoadingSpinner />
       ) : (
-        <DefaultButton
-          Icon={userData?.isFollowing || isFollowed ? LinkSlashIcon : LinkIcon}
-          label={userData?.isFollowing || isFollowed ? "Unlink" : "Link"}
-          onClick={async () => {
-            setFollowLoading(true);
-            await dispatch(toggleFollow(userId));
-            await dispatch(fetchUserData(userData?.data?.id || userData?.id));
-            await dispatch(
-              getUserData(userData?.data?.userName || userData?.userName)
-            );
-            await dispatch(recommendedUsers());
-            setIsFollowed(!userData?.isFollowing);
-            setFollowLoading(false);
-          }}
-        />
+        cookieData.data.id !== userId && (
+          <DefaultButton
+            Icon={
+              userData?.isFollowing || isFollowed ? LinkSlashIcon : LinkIcon
+            }
+            label={userData?.isFollowing || isFollowed ? "Unlink" : "Link"}
+            onClick={async () => {
+              setFollowLoading(true);
+              await dispatch(toggleFollow(userId));
+              await dispatch(fetchUserData(userData?.data?.id || userData?.id));
+              await dispatch(
+                getUserData(userData?.data?.userName || userData?.userName)
+              );
+              await dispatch(recommendedUsers());
+              setIsFollowed(!userData?.isFollowing);
+              setFollowLoading(false);
+            }}
+          />
+        )
       )}
     </div>
   );

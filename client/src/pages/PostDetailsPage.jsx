@@ -152,7 +152,7 @@ function PostDetailsPage() {
           index={postId}
           comments={post.comments}
           userId={post.post.authorId._id}
-          currentUserId={currentUser.id}
+          currentUserId={currentUser.data.id}
           postId={postId}
         />
       ) : (

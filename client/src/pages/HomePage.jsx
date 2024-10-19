@@ -61,6 +61,7 @@ function HomePage() {
                 index={i}
                 userId={authUserData?._id}
                 authorId={x.authorId?._id}
+                currentUserId={authUserData?.data.id}
               />
             </li>
           );
